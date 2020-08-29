@@ -136,11 +136,10 @@ export default class App extends Component {
   handleDiscoverPeripheral(peripheral){
     var peripherals = this.state.peripherals;
     console.log('Got ble peripheral', peripheral);
-    if (!peripheral.name) {
-      peripheral.name = 'NO NAME';
+    if (peripheral.name) {
+      peripherals.set(peripheral.id, peripheral);
+      this.setState({ peripherals });
     }
-    peripherals.set(peripheral.id, peripheral);
-    this.setState({ peripherals });
   }
 
   test(peripheral) {
