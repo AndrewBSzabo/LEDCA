@@ -12,12 +12,10 @@ import {
   FlatList,
   TouchableHighlight
 } from 'react-native';
-import Constants from 'expo-constants';
 
 import { Appbar, Drawer, Divider, Avatar, Button, List} from 'react-native-paper';
 import { createStackNavigator } from 'react-navigation';
 import { AppearanceProvider } from 'react-native-appearance';
-import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 
 export default class DeviceListPage extends Component {
     constructor(){
