@@ -1,21 +1,27 @@
 import React, { Component } from 'react';
 import {
-  Switch,
-  ScrollView,
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
+  TouchableHighlight,
   NativeEventEmitter,
   NativeModules,
-  SafeAreaView,
+  Platform,
+  PermissionsAndroid,
+  ScrollView,
+  AppState,
   FlatList,
-  TouchableHighlight
+  Dimensions,
+  SafeAreaView
 } from 'react-native';
+import BleManager from 'react-native-ble-manager';
 
 import { Appbar, Drawer, Divider, Avatar, Button, List} from 'react-native-paper';
 import { createStackNavigator } from 'react-navigation';
 import { AppearanceProvider } from 'react-native-appearance';
+
+const BleManagerModule = NativeModules.BleManager;
+const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 export default class DeviceListPage extends Component {
     constructor(){
@@ -224,7 +230,8 @@ export default class DeviceListPage extends Component {
       <SafeAreaView style={styles.container}>
           <ScrollView style={styles.scroll}>
             {(list.length == 0) &&
-              <View style={{flex:1, margin: 20}}>
+              <View style={{flex:1, margin: 20}}>]
+                <Button title="Scan" onPress={() => this.startScan() } />
                 <Text style={{textAlign: 'center'}}>No peripherals</Text>
               </View>
             }

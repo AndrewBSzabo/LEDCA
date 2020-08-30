@@ -10,7 +10,7 @@ export default class MainPage extends React.Component {
       params: props.navigation.state.params
     }
     // console.log(props.navigation.getParam('name'));
-    // console.log(props.navigation.state.params);
+     console.log(props.navigation.state.params);
   }
 
   render() {
@@ -19,7 +19,6 @@ export default class MainPage extends React.Component {
         <Text style={styles.paragraph}>
           Local files and assets can be imported by dragging and dropping them into the editor
         </Text>
-        <Image style={styles.logo} source={require('../assets/snack-icon.png')} />
       </View>
     );
   }
