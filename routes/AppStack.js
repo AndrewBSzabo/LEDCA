@@ -6,10 +6,7 @@ import MainPage from '../components/MainPage';
 
 const screens = {
   DeviceList: {
-    screen: DeviceListPage,
-    navigationOptions: {
-      title: "Device List",
-    }
+    screen: DeviceListPage
   },
   Main: {
     screen: MainPage,

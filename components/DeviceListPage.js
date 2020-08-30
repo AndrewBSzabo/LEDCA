@@ -12,18 +12,32 @@ import {
   AppState,
   FlatList,
   Dimensions,
+  Button,
   SafeAreaView
 } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
-import { Appbar, Drawer, Divider, Avatar, Button, List} from 'react-native-paper';
-import { createStackNavigator } from 'react-navigation';
-import { AppearanceProvider } from 'react-native-appearance';
+import { Appbar, Drawer, Divider, Avatar, List} from 'react-native-paper';
 
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 export default class DeviceListPage extends Component {
+
+    static navigationOptions = ({ navigation }) => {
+        return {
+            headerTitle: "Device List",
+            headerRight: (
+                <View style={{marginRight: 10}} >
+                    <Button
+                      onPress={navigation.getParam('scan')}
+                      title="Scan"
+                    />
+                </View>
+            ),
+        };
+    };
+
     constructor(){
         super()
 
@@ -41,6 +55,8 @@ export default class DeviceListPage extends Component {
     }
 
     componentDidMount() {
+        this.props.navigation.setParams({ scan: this.startScan});
+
         AppState.addEventListener('change', this.handleAppStateChange);
 
         BleManager.start({showAlert: false});
@@ -67,7 +83,6 @@ export default class DeviceListPage extends Component {
                 }
             });
         }
-
     }
 
     handleAppStateChange(nextAppState) {
@@ -96,9 +111,9 @@ export default class DeviceListPage extends Component {
             this.setState({peripherals});
         }
         console.log('Disconnected from ' + data.peripheral);
-        }
+    }
 
-        handleUpdateValueForCharacteristic(data) {
+    handleUpdateValueForCharacteristic(data) {
         console.log('Received data from ' + data.peripheral + ' characteristic ' + data.characteristic, data.value);
     }
 
@@ -107,7 +122,7 @@ export default class DeviceListPage extends Component {
         this.setState({ scanning: false });
     }
 
-    startScan() {
+    startScan = () => {
         if (!this.state.scanning) {
             //this.setState({peripherals: new Map()});
             BleManager.scan([], 3, true).then((results) => {
@@ -157,18 +172,18 @@ export default class DeviceListPage extends Component {
                 }
                 console.log('Connected to ' + peripheral.id);
                 
-                this.props.navigation.navigate('Main',item);
+                this.props.navigation.navigate('Main',peripheral);
 
-
+/*
                 setTimeout(() => {
 
-                /* Test read current RSSI value
+                 Test read current RSSI value
                 BleManager.retrieveServices(peripheral.id).then((peripheralData) => {
                     console.log('Retrieved peripheral services', peripheralData);
                     BleManager.readRSSI(peripheral.id).then((rssi) => {
                     console.log('Retrieved actual RSSI value', rssi);
                     });
-                });*/
+                });
 
                 // Test using bleno's pizza example
                 // https://github.com/sandeepmistry/bleno/tree/master/examples/pizza
@@ -186,14 +201,14 @@ export default class DeviceListPage extends Component {
                             console.log('Writed NORMAL crust');
                             BleManager.write(peripheral.id, service, bakeCharacteristic, [1,95]).then(() => {
                             console.log('Writed 351 temperature, the pizza should be BAKED');
-                            /*
+                            
                             var PizzaBakeResult = {
                                 HALF_BAKED: 0,
                                 BAKED:      1,
                                 CRISPY:     2,
                                 BURNT:      3,
                                 ON_FIRE:    4
-                            };*/
+                            };
                             });
                         });
 
@@ -205,6 +220,7 @@ export default class DeviceListPage extends Component {
                 });
 
                 }, 900);
+            */
             }).catch((error) => {
                 console.log('Connection error', error);
             });
@@ -213,25 +229,25 @@ export default class DeviceListPage extends Component {
     }
 
     renderItem(item) {
-    return (
-        <List.Item 
-        title={item.name} 
-        description={"RSSI: " + item.rssi} 
-        onPress={() => this.test(item)} 
-        left={props => <List.Icon {...props} icon="bluetooth" />}
-        />
-    );
+        return (
+            <List.Item 
+            title={item.name} 
+            description={"RSSI: " + item.rssi} 
+            onPress={() => this.test(item)} 
+            left={props => <List.Icon {...props} icon="bluetooth" />}
+            />
+        );
     }
 
   render() {
+
     const list = Array.from(this.state.peripherals.values());
 
     return (
       <SafeAreaView style={styles.container}>
           <ScrollView style={styles.scroll}>
             {(list.length == 0) &&
-              <View style={{flex:1, margin: 20}}>]
-                <Button title="Scan" onPress={() => this.startScan() } />
+              <View style={{flex:1, margin: 20}}>
                 <Text style={{textAlign: 'center'}}>No peripherals</Text>
               </View>
             }
